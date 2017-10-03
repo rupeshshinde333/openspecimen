@@ -335,14 +335,20 @@ public class ExportServiceImpl implements ExportService {
 
 				write(getHeaderRow("", "", job.getSchema().getRecord()));
 
-				String[] row;
-				while ((row = nextLine()) != null) {
+				String[] row = nextLine();
+				if (row == null) {
+					String msg = MessageUtil.getInstance().getMessage("export_no_matching_records");
+					write(Collections.singletonList(msg));
+				}
+
+				while (row != null) {
 					Map<String, String> rowValueMap = new HashMap<>();
 					for (int i = 0; i < row.length; i += 2) {
 						rowValueMap.put(row[i], row[i + 1]);
 					}
 
 					write(getDataRow("", "", job.getSchema().getRecord(), rowValueMap));
+					row = nextLine();
 				}
 
 				flush();
