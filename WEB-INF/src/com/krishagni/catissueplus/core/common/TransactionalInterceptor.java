@@ -123,7 +123,6 @@ public class TransactionalInterceptor {
 					status.setRollbackOnly();
 					throw ose;
 				} catch (Throwable t) {
-					logger.error("Error doing work inside " + pjp.getSignature(), t);
 					status.setRollbackOnly();
 					throw OpenSpecimenException.serverError(t);
 				}
