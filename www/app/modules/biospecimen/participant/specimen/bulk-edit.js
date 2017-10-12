@@ -2,8 +2,11 @@ angular.module('os.biospecimen.specimen.bulkedit', [])
   .controller('BulkEditSpecimensCtrl', function(
     $scope, Specimen, SpecimensHolder, PvManager) {
 
+      var specimens;
+
       function init() {
         $scope.specimen = new Specimen();
+        specimens = SpecimensHolder.getSpecimens() || [];
         loadPvs();
       }
 
@@ -13,7 +16,6 @@ angular.module('os.biospecimen.specimen.bulkedit', [])
       }
 
       $scope.bulkUpdate = function() {
-        var specimens = SpecimensHolder.getSpecimens() || [];
         var specimenIds = specimens.map(function(specimen) { return specimen.id; });
         Specimen.bulkEdit({detail: $scope.specimen, ids: specimenIds}).then(
           function(result) {
