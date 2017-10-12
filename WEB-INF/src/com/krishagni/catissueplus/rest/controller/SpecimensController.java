@@ -30,6 +30,7 @@ import com.krishagni.catissueplus.core.biospecimen.repository.SpecimenListCriter
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolRegistrationService;
 import com.krishagni.catissueplus.core.biospecimen.services.SpecimenService;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
+import com.krishagni.catissueplus.core.common.events.BulkEntityDetail;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
@@ -176,6 +177,15 @@ public class SpecimensController {
 		detail.setId(specimenId);
 		
 		ResponseEvent<SpecimenDetail> resp = specimenSvc.updateSpecimen(getRequest(detail));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "/bulk-update")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<SpecimenInfo> bulkUpdateSpecimens(@RequestBody BulkEntityDetail<SpecimenDetail> detail) {
+		ResponseEvent<List<SpecimenInfo>> resp = specimenSvc.bulkUpdateSpecimens(getRequest(detail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

@@ -742,6 +742,8 @@
       "visit_not_completed": "Please complete the visit before collecting unplanned specimen"
     },
 
+    "bulk_update": "Bulk Update Specimens",
+
     "bulk_events": {
       "title": "Bulk Events",
       "create": "Create Bulk Event",
@@ -1818,6 +1820,7 @@
     "transfer_specimens": "Transfer Specimens",
     "retrieve_specimens": "Retrieve",
     "location": "Storage Location",
+    "no_specimens_to_edit": "Please select at least one specimen to edit",
     "no_specimens_to_add_event": "Please select at least one specimen to add event",
     "no_specimens_to_transfer": "Please select at least one specimen to transfer",
     "no_specimens_to_retrieve": "Please select at least one specimen to retrieve",

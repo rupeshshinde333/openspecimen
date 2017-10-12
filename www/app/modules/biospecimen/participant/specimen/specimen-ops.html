@@ -5,6 +5,12 @@
   </button>
 
   <ul class="dropdown-menu">
+    <li show-if-allowed="resourceOpts.specimenUpdateOpts">
+      <a ng-click="editSpecimens()">
+        <span class="fa fa-pencil"></span>
+        <span translate="common.buttons.edit">Edit</span>
+      </a>
+    </li>
     <li show-if-allowed="resourceOpts.specimenDeleteOpts">
       <a ng-click="deleteSpecimens()">
         <span class="fa fa-trash"></span>

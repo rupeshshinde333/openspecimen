@@ -14,6 +14,7 @@ import com.krishagni.catissueplus.core.biospecimen.events.SpecimenInfo;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenQueryCriteria;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenStatusDetail;
 import com.krishagni.catissueplus.core.biospecimen.repository.SpecimenListCriteria;
+import com.krishagni.catissueplus.core.common.events.BulkEntityDetail;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.LabelTokenDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
@@ -34,6 +35,8 @@ public interface SpecimenService {
 	public ResponseEvent<SpecimenDetail> updateSpecimen(RequestEvent<SpecimenDetail> req);
 
 	public ResponseEvent<List<SpecimenInfo>> updateSpecimens(RequestEvent<List<SpecimenDetail>> req);
+
+	public ResponseEvent<List<SpecimenInfo>> bulkUpdateSpecimens(RequestEvent<BulkEntityDetail<SpecimenDetail>> req);
 	
 	public ResponseEvent<List<SpecimenDetail>> updateSpecimensStatus(RequestEvent<List<SpecimenStatusDetail>> req);
 
@@ -65,4 +68,5 @@ public interface SpecimenService {
 	public List<Specimen> getSpecimensByLabel(List<String> labels);
 
 	public List<Specimen> getSpecimensById(List<Long> ids);
+
 }

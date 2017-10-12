@@ -9,6 +9,7 @@ angular.module('os.biospecimen.specimen',
     'os.biospecimen.specimen.addaliquots',
     'os.biospecimen.specimen.addderivative',
     'os.biospecimen.specimen.bulkaddevent',
+    'os.biospecimen.specimen.bulkedit',
     'os.biospecimen.specimen.search'
   ])
   .config(function($stateProvider) {
@@ -240,6 +241,12 @@ angular.module('os.biospecimen.specimen',
             return specimens || [];
           }
         },
+        parent: 'signed-in'
+      })
+      .state('specimen-bulk-edit', {
+        url: '/bulk-edit-specimens',
+        templateUrl: "modules/biospecimen/participant/specimen/bulk-edit.html",
+        controller: 'BulkEditSpecimensCtrl',
         parent: 'signed-in'
       })
       .state('bulk-add-event', {

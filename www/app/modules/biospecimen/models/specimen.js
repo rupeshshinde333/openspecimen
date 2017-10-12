@@ -90,6 +90,12 @@ angular.module('os.biospecimen.models.specimen', ['os.common.models', 'os.biospe
       );
     };
 
+    //Update specimens in bulk with same detail
+    Specimen.bulkEdit = function(detail) {
+      return $http.put(Specimen.url() + "bulk-update", detail).then(Specimen.modelArrayRespTransform);
+    }
+
+    //Update specimens in bulk by providing detail for each
     Specimen.bulkUpdate = function(specimens) {
       return $http.put(Specimen.url(), specimens).then(Specimen.modelArrayRespTransform);
     };
