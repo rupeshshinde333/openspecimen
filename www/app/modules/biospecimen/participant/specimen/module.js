@@ -9,7 +9,6 @@ angular.module('os.biospecimen.specimen',
     'os.biospecimen.specimen.addaliquots',
     'os.biospecimen.specimen.addderivative',
     'os.biospecimen.specimen.bulkaddevent',
-    'os.biospecimen.specimen.bulkedit',
     'os.biospecimen.specimen.search'
   ])
   .config(function($stateProvider) {

@@ -242,16 +242,17 @@ public class SpecimenServiceImpl implements SpecimenService, ObjectStateParamsRe
 	@PlusTransactional
 	public ResponseEvent<List<SpecimenInfo>> bulkUpdateSpecimens(RequestEvent<BulkEntityDetail<SpecimenDetail>> req) {
 		try {
-			List<Specimen> savedSpmns = new ArrayList<>();
-			OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 			BulkEntityDetail<SpecimenDetail> buDetail = req.getPayload();
 			SpecimenDetail spmn = buDetail.getDetail();
+
+			OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
+			List<Specimen> savedSpmns = new ArrayList<>();
 			for (Long id : buDetail.getIds()) {
 				spmn.setId(id);
 				savedSpmns.add(updateSpecimen(spmn, ose));
 			}
-			ose.checkAndThrow();
 
+			ose.checkAndThrow();
 			return ResponseEvent.response(SpecimenDetail.from(savedSpmns));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);

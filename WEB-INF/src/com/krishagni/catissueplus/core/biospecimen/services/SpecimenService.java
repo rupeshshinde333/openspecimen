@@ -68,5 +68,4 @@ public interface SpecimenService {
 	public List<Specimen> getSpecimensByLabel(List<String> labels);
 
 	public List<Specimen> getSpecimensById(List<Long> ids);
-
 }
