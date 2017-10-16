@@ -38,6 +38,8 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 	private Map<String, Object> occupantProps;
 
 	private String cpShortTitle;
+
+	private Boolean blocked;
 	
 	public Long getId() {
 		return id;
@@ -151,6 +153,14 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 		this.cpShortTitle = cpShortTitle;
 	}
 
+	public Boolean getBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(Boolean blocked) {
+		this.blocked = blocked;
+	}
+
 	@Override
 	public int compareTo(StorageContainerPositionDetail other) {
 		int cmp;
@@ -182,6 +192,7 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 		result.setContainerId(position.getContainer().getId());
 		result.setContainerName(position.getContainer().getName());
 		result.setMode(position.getContainer().getPositionLabelingMode().name());
+		result.setBlocked(position.isBlocked());
 		
 		if (position.getOccupyingSpecimen() != null) {
 			Specimen specimen = position.getOccupyingSpecimen();

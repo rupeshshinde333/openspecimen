@@ -251,4 +251,10 @@
         cpr.identifier
     </createView>
   </changeSet>
+
+  <changeSet author="vpawar" id="Boolean indicating whether the container position is blocked">
+    <addColumn tableName="OS_CONTAINER_POSITIONS">
+      <column name="BLOCKED" type="${boolean.type}"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

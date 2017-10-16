@@ -3,14 +3,14 @@ package com.krishagni.catissueplus.core.administrative.events;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssignPositionsOp {
+public class PositionsDetail {
 	private Long containerId;
 	
 	private String containerName;
 	
 	private boolean vacateOccupant;
 	
-	private List<StorageContainerPositionDetail> positions = new ArrayList<StorageContainerPositionDetail>();
+	private List<StorageContainerPositionDetail> positions = new ArrayList<>();
 
 	public Long getContainerId() {
 		return containerId;

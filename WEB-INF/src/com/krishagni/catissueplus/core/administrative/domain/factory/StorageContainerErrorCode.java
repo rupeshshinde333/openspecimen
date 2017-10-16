@@ -49,8 +49,8 @@ public enum StorageContainerErrorCode implements ErrorCode {
 	INVALID_ENTITY_TYPE,
 	
 	OCCUPYING_ENTITY_ID_OR_NAME_REQUIRED,
-	
-	INVALID_POSITIONS,
+
+	INV_POS,
 	
 	INVALID_CPS, 
 	
@@ -74,7 +74,11 @@ public enum StorageContainerErrorCode implements ErrorCode {
 
 	INV_CONT_SEL_STRATEGY,
 
-	INV_CONT_SEL_RULE;
+	INV_CONT_SEL_RULE,
+
+	DL_POS_BLK_NP,
+
+	POS_OCCUPIED;
 
 	@Override
 	public String code() {

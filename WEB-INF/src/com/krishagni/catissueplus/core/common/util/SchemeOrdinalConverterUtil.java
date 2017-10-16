@@ -46,7 +46,7 @@ public class SchemeOrdinalConverterUtil {
 	private class NumberSchemeOrdinalConverter implements SchemeOrdinalConverter {
 		@Override
 		public Integer toOrdinal(String number) {
-			if (number == null) {
+			if (StringUtils.isBlank(number)) {
 				return null;
 			}
 
@@ -97,6 +97,10 @@ public class SchemeOrdinalConverterUtil {
 
 		@Override
 		public Integer toOrdinal(String number) {
+			if (StringUtils.isBlank(number)) {
+				return null;
+			}
+
 			number = number.toLowerCase();
 
 			int result = 0;
@@ -161,6 +165,10 @@ public class SchemeOrdinalConverterUtil {
 
 		@Override
 		public Integer toOrdinal(String number) {
+			if (StringUtils.isBlank(number)) {
+				return null;
+			}
+
 			number = number.toLowerCase();
 
 			if (!StringUtils.isAlpha(number)) {

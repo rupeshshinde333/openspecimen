@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false">
   <class name="com.krishagni.catissueplus.core.administrative.domain.StorageContainerPosition" table="OS_CONTAINER_POSITIONS" batch-size="25">
@@ -23,22 +23,12 @@
 
     <property name="reservationTime" column="RESERVATION_TIME"/>
 
-    <many-to-one
-      name="container"
-      class="com.krishagni.catissueplus.core.administrative.domain.StorageContainer"
-      column="STORAGE_CONTAINER_ID"/>
+    <property name="blocked" column="BLOCKED"/>
 
-    <many-to-one
-      name="occupyingSpecimen"
-      class="com.krishagni.catissueplus.core.biospecimen.domain.Specimen"
-      column="OCCUPYING_SPECIMEN_ID"
-      unique="true"
-      cascade="save-update"/>
+    <many-to-one name="container" column="STORAGE_CONTAINER_ID"/>
 
-    <many-to-one
-      name="occupyingContainer"
-      class="com.krishagni.catissueplus.core.administrative.domain.StorageContainer"
-      column="OCCUPYING_CONTAINER_ID"
-      unique="true"/>
+    <many-to-one name="occupyingSpecimen" column="OCCUPYING_SPECIMEN_ID" unique="true" cascade="save-update"/>
+
+    <many-to-one name="occupyingContainer" column="OCCUPYING_CONTAINER_ID" unique="true"/>
   </class>
 </hibernate-mapping>

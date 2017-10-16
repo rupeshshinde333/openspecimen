@@ -27,12 +27,12 @@ import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainerPosition;
 import com.krishagni.catissueplus.core.administrative.domain.factory.StorageContainerErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.StorageContainerFactory;
-import com.krishagni.catissueplus.core.administrative.events.AssignPositionsOp;
 import com.krishagni.catissueplus.core.administrative.events.ContainerCriteria;
 import com.krishagni.catissueplus.core.administrative.events.ContainerHierarchyDetail;
 import com.krishagni.catissueplus.core.administrative.events.ContainerQueryCriteria;
 import com.krishagni.catissueplus.core.administrative.events.ContainerReplicationDetail;
 import com.krishagni.catissueplus.core.administrative.events.ContainerReplicationDetail.DestinationDetail;
+import com.krishagni.catissueplus.core.administrative.events.PositionsDetail;
 import com.krishagni.catissueplus.core.administrative.events.ReservePositionsOp;
 import com.krishagni.catissueplus.core.administrative.events.StorageContainerDetail;
 import com.krishagni.catissueplus.core.administrative.events.StorageContainerPositionDetail;
@@ -332,9 +332,9 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 
 	@Override
 	@PlusTransactional
-	public ResponseEvent<List<StorageContainerPositionDetail>> assignPositions(RequestEvent<AssignPositionsOp> req) {
+	public ResponseEvent<List<StorageContainerPositionDetail>> assignPositions(RequestEvent<PositionsDetail> req) {
 		try {
-			AssignPositionsOp op = req.getPayload();
+			PositionsDetail op = req.getPayload();
 			StorageContainer container = getContainer(op.getContainerId(), op.getContainerName());
 			
 			List<StorageContainerPosition> positions = op.getPositions().stream()
@@ -491,6 +491,64 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 
 	@Override
 	@PlusTransactional
+	public ResponseEvent<List<StorageContainerPositionDetail>> blockPositions(RequestEvent<PositionsDetail> req) {
+		try {
+			PositionsDetail opDetail = req.getPayload();
+			if (CollectionUtils.isEmpty(opDetail.getPositions())) {
+				return ResponseEvent.response(Collections.emptyList());
+			}
+
+			StorageContainer container = getContainer(opDetail.getContainerId(), opDetail.getContainerName());
+			AccessCtrlMgr.getInstance().ensureUpdateContainerRights(container);
+			if (container.isDimensionless()) {
+				return ResponseEvent.userError(StorageContainerErrorCode.DL_POS_BLK_NP, container.getName());
+			}
+
+			List<StorageContainerPosition> positions = opDetail.getPositions().stream()
+				.map(detail -> container.createPosition(detail.getPosOne(), detail.getPosTwo()))
+				.collect(Collectors.toList());
+
+			List<StorageContainerPosition> blocked = container.blockPositions(positions);
+			daoFactory.getStorageContainerDao().saveOrUpdate(container, true);
+			return ResponseEvent.response(StorageContainerPositionDetail.from(blocked));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<List<StorageContainerPositionDetail>> unblockPositions(RequestEvent<PositionsDetail> req) {
+		try {
+			PositionsDetail opDetail = req.getPayload();
+			if (CollectionUtils.isEmpty(opDetail.getPositions())) {
+				return ResponseEvent.response(Collections.emptyList());
+			}
+
+			StorageContainer container = getContainer(opDetail.getContainerId(), opDetail.getContainerName());
+			AccessCtrlMgr.getInstance().ensureUpdateContainerRights(container);
+			if (container.isDimensionless()) {
+				return ResponseEvent.userError(StorageContainerErrorCode.DL_POS_BLK_NP, container.getName());
+			}
+
+			List<StorageContainerPosition> positions = opDetail.getPositions().stream()
+				.map(detail -> container.createPosition(detail.getPosOne(), detail.getPosTwo()))
+				.collect(Collectors.toList());
+
+			List<StorageContainerPosition> unblocked = container.unblockPositions(positions);
+			daoFactory.getStorageContainerDao().saveOrUpdate(container, true);
+			return ResponseEvent.response(StorageContainerPositionDetail.from(unblocked));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
+
+	@Override
+	@PlusTransactional
 	public ResponseEvent<List<StorageLocationSummary>> reservePositions(RequestEvent<ReservePositionsOp> req) {
 		long t1 = System.currentTimeMillis();
 		try {
@@ -498,9 +556,6 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 			if (StringUtils.isNotBlank(op.getReservationToCancel())) {
 				cancelReservation(new RequestEvent<>(op.getReservationToCancel()));
 			}
-
-			String reservationId = UUID.randomUUID().toString();
-			Date reservationTime = Calendar.getInstance().getTime();
 
 			Long cpId = op.getCpId();
 			CollectionProtocol cp = daoFactory.getCollectionProtocolDao().getById(cpId);
@@ -527,6 +582,8 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 				return ResponseEvent.response(Collections.emptyList());
 			}
 
+			String reservationId = StorageContainer.getReservationId();
+			Date reservationTime = Calendar.getInstance().getTime();
 			List<StorageContainerPosition> reservedPositions = new ArrayList<>();
 			for (ContainerCriteria criteria : op.getCriteria()) {
 				criteria.siteCps(reqSiteCps);
@@ -555,22 +612,8 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 						numPositions = 1;
 					}
 
-					while (numPositions != 0) {
-						StorageContainerPosition pos = container.nextAvailablePosition(true);
-						if (pos == null) {
-							break;
-						}
-
-						pos.setReservationId(reservationId);
-						pos.setReservationTime(reservationTime);
-						reservedPositions.add(pos);
-						--numPositions;
-
-						if (!container.isDimensionless()) {
-							container.addPosition(pos);
-						}
-					}
-
+					List<StorageContainerPosition> positions = container.reservePositions(reservationId, reservationTime, numPositions);
+					numPositions -= positions.size();
 					if (numPositions == 0) {
 						allAllocated = true;
 					} else {
@@ -868,7 +911,7 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 	private ResponseEvent<StorageContainerDetail> updateStorageContainer(RequestEvent<StorageContainerDetail> req, boolean partial) {
 		try {
 			StorageContainerDetail input = req.getPayload();			
-			StorageContainer existing = getContainer(input.getId(), input.getName());			
+			StorageContainer existing = getContainer(input.getId(), input.getName());
 			AccessCtrlMgr.getInstance().ensureUpdateContainerRights(existing);			
 			
 			input.setId(existing.getId());
@@ -879,7 +922,7 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 				container = containerFactory.createStorageContainer(input); 
 			}
 			
-			ensureUniqueConstraints(existing, container);			
+			ensureUniqueConstraints(existing, container);
 			existing.update(container);			
 			daoFactory.getStorageContainerDao().saveOrUpdate(existing, true);
 			return ResponseEvent.response(StorageContainerDetail.from(existing));			
@@ -932,7 +975,7 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 	
 	private StorageContainerPosition createPosition(StorageContainer container, StorageContainerPositionDetail pos, boolean vacateOccupant) {
 		if (StringUtils.isBlank(pos.getPosOne()) ^ StringUtils.isBlank(pos.getPosTwo())) {
-			throw OpenSpecimenException.userError(StorageContainerErrorCode.INVALID_POSITIONS);
+			throw OpenSpecimenException.userError(StorageContainerErrorCode.INV_POS, container.getName(), pos.getPosOne(), pos.getPosTwo());
 		}
 		
 		String entityType = pos.getOccuypingEntity();
@@ -1118,7 +1161,7 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 		copy.setColumnLabelingScheme(source.getColumnLabelingScheme());
 		copy.setRowLabelingScheme(source.getRowLabelingScheme());
 		copy.setComments(source.getComments());
-		copy.setAllowedSpecimenClasses(new HashSet<String>(source.getAllowedSpecimenClasses()));		
+		copy.setAllowedSpecimenClasses(new HashSet<String>(source.getAllowedSpecimenClasses()));
 		copy.setAllowedSpecimenTypes(new HashSet<String>(source.getAllowedSpecimenTypes()));
 		copy.setAllowedCps(new HashSet<CollectionProtocol>(source.getAllowedCps()));
 		copy.setCompAllowedSpecimenClasses(copy.computeAllowedSpecimenClasses());

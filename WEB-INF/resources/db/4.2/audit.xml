@@ -51,4 +51,11 @@
       <column name="visitCollectionMode_MOD" type="${bit.type}"/>
     </addColumn>
   </changeSet>
+
+  <changeSet author="vpawar" id="Audit and track changes to container slot blocking">
+    <addColumn tableName="OS_CONTAINER_POSITIONS_AUD">
+      <column name="BLOCKED" type="${boolean.type}"/>
+      <column name="blocked_MOD" type="${boolean.type}"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>
