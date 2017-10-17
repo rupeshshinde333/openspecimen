@@ -5,6 +5,10 @@
   height: 100%;
 }
 
+.os-container-locations .os-page-commands {
+  padding-left: 0px;
+}
+
 .os-container-locations .input-spmn-labels {
   flex: 1;
   width: 100%;
@@ -155,6 +159,10 @@
   background: #f5f5f5;
 }
 
+.os-container-map .slot-blocked {
+  background: #d9534f;
+}
+
 .os-container-tree {
   height: 100%;
   overflow: auto;
@@ -229,4 +237,3 @@ td.os-container-pos.assigned {
 td.os-container-pos.selected {
   background: #d5d5d5;
 }
-

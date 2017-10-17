@@ -1,6 +1,6 @@
 <div class="os-full-height-container" ng-class="{'row': !!lctx.entityInfo.id}">
   <div class="os-container-locations" ng-class="{'col-xs-8': !!lctx.entityInfo.id}">
-    <div class="input-spmn-labels" ng-if="ctx.container.storeSpecimensEnabled">
+    <div class="input-spmn-labels" ng-if="lctx.selected.length == 0">
       <div class="input-group" os-textarea-input-group>
         <textarea ng-model="lctx.input.labels" class="form-control"
           placeholder="{{'container.paste_specimen_labels' | translate}}" rows="2" style="resize: none;"
@@ -30,6 +30,19 @@
             <span translate="container.vacate_positions">Vacate existing specimens</span>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="os-page-commands" show-if-allowed="containerResource.updateOpts" ng-if="lctx.selected.length > 0">
+      <div class="left">
+        <button class="default" ng-click="blockPositions()">
+          <span class="fa fa-ban"></span>
+          <span translate="container.block">Block</span>
+        </button>
+        <button class="default" ng-click="unblockPositions()">
+          <span class="fa fa-undo"></span>
+          <span translate="container.unblock">Unblock</span>
+        </button>
       </div>
     </div>
 
@@ -64,7 +77,8 @@
       </div>
       <div ng-switch-default>
         <os-container-map container="ctx.container" occupancy-map="lctx.occupancyMap"
-          on-add-event="addContainer" cell-click="showInfo(entityType, entityId)">
+          on-add-event="addContainer" cell-click="showInfo(entityType, entityId)"
+          toggle-cell-select="toggleCellSelect(cell)">
         </os-container-map>
       </div>
     </div>

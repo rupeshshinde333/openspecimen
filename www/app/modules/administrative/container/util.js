@@ -1,6 +1,6 @@
 
 angular.module('os.administrative.container.util', ['os.common.box'])
-  .factory('ContainerUtil', function(BoxLayoutUtil, NumberConverterUtil) {
+  .factory('ContainerUtil', function($translate, BoxLayoutUtil, NumberConverterUtil) {
 
     function createSpmnPos(container, label, x, y, oldOccupant) {
       return {
@@ -39,7 +39,8 @@ angular.module('os.administrative.container.util', ['os.common.box'])
           columnLabelingScheme : function() { return container.columnLabelingScheme; },
           occupantClick        : function() { /* dummy method to make box allow cell clicks */ }
         },
-
+        toggleCellSelect: function() { },
+        allowEmptyCellSelect: true,
         occupants: [],
         occupantName: function(occupant) {
           if (!!useBarcode && occupant.occuypingEntity == 'specimen') {
@@ -50,14 +51,18 @@ angular.module('os.administrative.container.util', ['os.common.box'])
         },
         occupantDisplayHtml: function(occupant) {
           var displayName = undefined;
+          var cssClass = '';
           if (occupant.occuypingEntity == 'specimen' && !!occupant.occupantProps) {
             displayName = getOccupantDisplayName(container, occupant);
-           } else {
+          } else if (!!occupant.occupyingEntityName) {
             displayName = occupant.occupyingEntityName;
+          } else if (occupant.blocked) {
+            displayName = $translate.instant('container.cell_blocked');
+            cssClass = 'slot-blocked';
           }
 
           return angular.element('<span class="slot-desc"/>')
-            .attr('title', displayName)
+            .addClass(cssClass).attr('title', displayName)
             .append(displayName);
         },
         allowClicks: allowClicks,

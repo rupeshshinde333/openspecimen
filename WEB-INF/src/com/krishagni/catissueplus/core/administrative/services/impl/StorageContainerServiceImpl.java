@@ -508,9 +508,9 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 				.map(detail -> container.createPosition(detail.getPosOne(), detail.getPosTwo()))
 				.collect(Collectors.toList());
 
-			List<StorageContainerPosition> blocked = container.blockPositions(positions);
+			container.blockPositions(positions);
 			daoFactory.getStorageContainerDao().saveOrUpdate(container, true);
-			return ResponseEvent.response(StorageContainerPositionDetail.from(blocked));
+			return ResponseEvent.response(StorageContainerPositionDetail.from(container.getOccupiedPositions()));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -537,9 +537,9 @@ public class StorageContainerServiceImpl implements StorageContainerService, Obj
 				.map(detail -> container.createPosition(detail.getPosOne(), detail.getPosTwo()))
 				.collect(Collectors.toList());
 
-			List<StorageContainerPosition> unblocked = container.unblockPositions(positions);
+			container.unblockPositions(positions);
 			daoFactory.getStorageContainerDao().saveOrUpdate(container, true);
-			return ResponseEvent.response(StorageContainerPositionDetail.from(unblocked));
+			return ResponseEvent.response(StorageContainerPositionDetail.from(container.getOccupiedPositions()));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {

@@ -10,7 +10,8 @@ angular.module('os.administrative.container.map', ['os.common.box', 'os.administ
         container:    '=',
         occupancyMap: '=',
         onAddEvent:   '&',
-        cellClick:    '&'
+        cellClick:    '&',
+        toggleCellSelect: '&'
       },
 
       link: function(scope, element, attrs) {
@@ -22,6 +23,31 @@ angular.module('os.administrative.container.map', ['os.common.box', 'os.administ
 
         scope.onClick = function($event) {
           var target = angular.element($event.originalEvent.target);
+          if (target.is("span.box") && target.parent() && target.parent().is("label.os-checkbox")) {
+            return; // checkbox border
+          }
+
+          if (target.is("input[type='checkbox']")) {
+            var slotEl = target.closest('.slot-element');
+            if (target[0].checked) {
+              slotEl.addClass('slot-assigned');
+            } else {
+              slotEl.removeClass('slot-assigned');
+            }
+
+            if (scope.toggleCellSelect) {
+              var cell = {
+                id      : target.attr('data-id'),
+                posTwo  : target.attr('data-pos-y'),
+                posOne  : target.attr('data-pos-x'),
+                selected: target[0].checked
+              }
+              scope.toggleCellSelect({cell: cell});
+            }
+
+            return;
+          }
+
           while (!target.hasClass('slot-element') && !target.is("table")) {
             target = target.parent();
           }

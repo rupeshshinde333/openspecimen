@@ -905,14 +905,13 @@ public class StorageContainer extends BaseEntity {
 		return reservedPositions;
 	}
 
-	public List<StorageContainerPosition> blockPositions(Collection<StorageContainerPosition> positions) {
+	public void blockPositions(Collection<StorageContainerPosition> positions) {
 		if (isDimensionless()) {
 			throw OpenSpecimenException.userError(StorageContainerErrorCode.DL_POS_BLK_NP, getName());
 		}
 
 		Date reservationTime = Calendar.getInstance().getTime();
 		String reservationId = getReservationId();
-		List<StorageContainerPosition> blocked = new ArrayList<>();
 		for (StorageContainerPosition position : positions) {
 			if (!position.isSpecified() || !areValidPositions(position.getPosOneOrdinal(), position.getPosTwoOrdinal())) {
 				throw OpenSpecimenException.userError(StorageContainerErrorCode.INV_POS, getName(), position.getPosOne(), position.getPosTwo());
@@ -926,27 +925,20 @@ public class StorageContainer extends BaseEntity {
 			position.setReservationTime(reservationTime);
 			position.setReservationId(reservationId);
 			addPosition(position);
-			blocked.add(position);
 		}
-
-		return blocked;
 	}
 
-	public List<StorageContainerPosition> unblockPositions(Collection<StorageContainerPosition> positions) {
+	public void unblockPositions(Collection<StorageContainerPosition> positions) {
 		if (isDimensionless()) {
 			throw OpenSpecimenException.userError(StorageContainerErrorCode.DL_POS_BLK_NP, getName());
 		}
 
-		List<StorageContainerPosition> unblocked = new ArrayList<>();
 		for (StorageContainerPosition position : positions) {
 			StorageContainerPosition occupied = getOccupiedPosition(position.getPosOneOrdinal(), position.getPosTwoOrdinal());
 			if (occupied != null && occupied.isBlocked()) {
 				occupied.vacate();
-				unblocked.add(occupied);
 			}
 		}
-
-		return unblocked;
 	}
 	
 	public StorageContainer copy() {

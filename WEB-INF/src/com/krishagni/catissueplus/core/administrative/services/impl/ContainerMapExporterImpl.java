@@ -97,8 +97,7 @@ public class ContainerMapExporterImpl implements ContainerMapExporter {
 		writer.writeNext(cells.toArray(new String[0]));
 				
 		int posIdx = 0;
-		List<StorageContainerPosition> positions = 
-				new ArrayList<StorageContainerPosition>(container.getOccupiedPositions());
+		List<StorageContainerPosition> positions = new ArrayList<>(container.getOccupiedPositions());
 		Collections.sort(positions);
 		
 		for (int j = 1; j <= container.getNoOfRows(); ++j) {
@@ -120,6 +119,8 @@ public class ContainerMapExporterImpl implements ContainerMapExporter {
 						cells.add(pos.getOccupyingContainer().getName());
 					} else if (pos.getOccupyingSpecimen() != null) {
 						cells.add(pos.getOccupyingSpecimen().getLabel());
+					} else if (pos.isBlocked()) {
+						cells.add(getMessage("storage_container_cell_blocked"));
 					} else {
 						cells.add("");
 					}						

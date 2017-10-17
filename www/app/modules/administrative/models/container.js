@@ -145,6 +145,22 @@ angular.module('os.administrative.models.container', ['os.common.models'])
       );
     };
 
+    Container.prototype.blockPositions = function(positions) {
+      return $http.put(Container.url() + this.$id() + '/block-positions', positions).then(
+        function(resp) {
+          return resp.data;
+        }
+      );
+    }
+
+    Container.prototype.unblockPositions = function(positions) {
+      return $http.put(Container.url() + this.$id() + '/unblock-positions', positions).then(
+        function(resp) {
+          return resp.data;
+        }
+      );
+    }
+
     Container.list = function(opts) {
       var defOpts = {topLevelContainers: true};
       return Container.query(angular.extend(defOpts, opts || {}));

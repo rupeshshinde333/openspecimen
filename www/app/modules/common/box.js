@@ -107,8 +107,8 @@ angular.module('os.common.box', [])
       var el = $("<div class='slot-element'/>");
 
       var occupant = cell.occupied;
-      if (occupant && opts.toggleCellSelect) {
-        var attrs = {'data-id': occupant.id, 'data-pos-y': row, 'data-pos-x': column, 'data-pos': pos};
+      if ((occupant || opts.allowEmptyCellSelect) && opts.toggleCellSelect) {
+        var attrs = {'data-id': occupant && occupant.id, 'data-pos-y': row, 'data-pos-x': column, 'data-pos': pos};
         var checkbox = $("<label class='os-checkbox'/>")
           .append($("<input type='checkbox'>").attr(attrs))
           .append($("<span class='box'/>"))
@@ -320,6 +320,9 @@ angular.module('os.common.box', [])
 
         scope.onClick = function($event) {
           var target = angular.element($event.originalEvent.target);
+          if (target.is("span.box") && target.parent() && target.parent().is("label.os-checkbox")) {
+            return; // checkbox border
+          }
 
           if (target.is("input[type='checkbox']")) {
             var slotEl = target.closest('.slot-element');

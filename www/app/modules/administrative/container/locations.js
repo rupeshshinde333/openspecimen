@@ -9,7 +9,8 @@ angular.module('os.administrative.container.locations', ['os.administrative.mode
         mapState: 'loading',
         input: {labels: '', noFreeLocs: false, vacateOccupants: false, useBarcode: false},
         entityInfo: {},
-        barcodingEnabled: barcodingEnabled
+        barcodingEnabled: barcodingEnabled,
+        selected: []
       };
 
       if (container.noOfRows > 0 && container.noOfColumns > 0) {
@@ -195,6 +196,81 @@ angular.module('os.administrative.container.locations', ['os.administrative.mode
               $scope.lctx.input.labels = undefined;
             }
           );
+        }
+      );
+    }
+
+    $scope.toggleCellSelect = function(cell) {
+      var selected = $scope.lctx.selected;
+
+      if (cell.selected) {
+        if (!cell.id) { // unoccupied cell
+          selected.push(cell);
+        } else {
+          var positions = $scope.lctx.pristineMap;
+          for (var i = 0; i < positions.length; ++i) {
+            if (positions[i].id == cell.id) {
+              selected.push(positions[i]);
+              break;
+            }
+          }
+        }
+      } else {
+        for (var i = $scope.lctx.selected.length - 1; i >= 0; --i) {
+          if (cell.posOne == selected[i].posOne && cell.posTwo == selected[i].posTwo) {
+            selected.splice(i, 1);
+            break;
+          }
+        }
+      }
+    }
+
+    $scope.blockPositions = function() {
+      var selectedCells = $scope.lctx.selected;
+      var positions = [];
+      for (var i = 0; i < selectedCells.length; ++i) {
+        if (!!selectedCells[i].id) {
+          break;
+        }
+
+        positions.push({posOne: selectedCells[i].posOne, posTwo: selectedCells[i].posTwo});
+      }
+
+      if (positions.length != selectedCells.length) {
+        Alerts.error('container.empty_cells_can_be_blocked');
+        return;
+      }
+
+      container.blockPositions(positions).then(
+        function(latestOccupancyMap) {
+          $scope.lctx.selected = [];
+          $scope.lctx.pristineMap = $scope.lctx.occupancyMap = latestOccupancyMap;
+          $scope.lctx.input.labels = undefined;
+        }
+      );
+    }
+
+    $scope.unblockPositions = function() {
+      var positions = [];
+      var selectedCells = $scope.lctx.selected;
+      for (var i = 0; i < selectedCells.length; ++i) {
+        if (!selectedCells[i].blocked) {
+          break;
+        }
+
+        positions.push({posOne: selectedCells[i].posOne, posTwo: selectedCells[i].posTwo});
+      }
+
+      if (positions.length != selectedCells.length) {
+        Alerts.error('container.blocked_cells_can_be_unblocked');
+        return;
+      }
+
+      container.unblockPositions(positions).then(
+        function(latestOccupancyMap) {
+          $scope.lctx.selected = [];
+          $scope.lctx.pristineMap = $scope.lctx.occupancyMap = latestOccupancyMap;
+          $scope.lctx.input.labels = undefined;
         }
       );
     }

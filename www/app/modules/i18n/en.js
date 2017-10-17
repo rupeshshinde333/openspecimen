@@ -1217,6 +1217,11 @@
       "LINEAR": "Linear",
       "TWO_D" : "Row and Column"
     },
+    "block": "Block",
+    "unblock": "Unblock",
+    "cell_blocked": "Blocked",
+    "empty_cells_can_be_blocked": "Only empty positions can be blocked",
+    "blocked_cells_can_be_unblocked": "Only blocked positions can be unblocked",
     "cell_display_prop": "Display in Map",
     "cell_display_props": {
       "SPECIMEN_LABEL": "Specimen Label",
