@@ -5,7 +5,9 @@ import java.util.Date;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent.EventPointIntervalUnit;
 import com.krishagni.catissueplus.core.common.events.UserSummary;
+import com.krishagni.catissueplus.core.common.util.Utility;
 
 public class VisitSummary implements Comparable<VisitSummary> {
 	private Long id;
@@ -19,6 +21,8 @@ public class VisitSummary implements Comparable<VisitSummary> {
 	private String eventLabel;
 	
 	private Integer eventPoint;
+
+	private EventPointIntervalUnit intervalUnit;
 	
 	private String status;
 	
@@ -33,7 +37,7 @@ public class VisitSummary implements Comparable<VisitSummary> {
 	private int plannedPrimarySpmnsColl;
 	
 	private int uncollectedPrimarySpmns;
-	
+
 	private int unplannedPrimarySpmnsColl;
 
 	private int storedSpecimens;
@@ -94,6 +98,14 @@ public class VisitSummary implements Comparable<VisitSummary> {
 
 	public void setEventPoint(Integer eventPoint) {
 		this.eventPoint = eventPoint;
+	}
+
+	public EventPointIntervalUnit getIntervalUnit() {
+		return intervalUnit;
+	}
+
+	public void setIntervalUnit(EventPointIntervalUnit intervalUnit) {
+		this.intervalUnit = intervalUnit;
 	}
 
 	public String getStatus() {
@@ -210,7 +222,9 @@ public class VisitSummary implements Comparable<VisitSummary> {
 
 	@Override
 	public int compareTo(VisitSummary other) {
-		int result = ObjectUtils.compare(this.eventPoint, other.eventPoint, true);
+		Integer thisEventPoint = Utility.getNoOfDays(this.eventPoint, this.intervalUnit);
+		Integer otherEventPoint = Utility.getNoOfDays(other.eventPoint, other.intervalUnit);
+		int result = ObjectUtils.compare(thisEventPoint, otherEventPoint, true);
 		if (result != 0) {
 			return result;
 		}

@@ -17,11 +17,13 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent.EventPointIntervalUnit;
 import com.krishagni.catissueplus.core.biospecimen.domain.Visit;
 import com.krishagni.catissueplus.core.biospecimen.events.VisitSummary;
 import com.krishagni.catissueplus.core.biospecimen.repository.VisitsDao;
 import com.krishagni.catissueplus.core.biospecimen.repository.VisitsListCriteria;
 import com.krishagni.catissueplus.core.common.repository.AbstractDao;
+import com.krishagni.catissueplus.core.common.util.Utility;
 
 public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 	
@@ -42,7 +44,8 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 		Map<Long, VisitSummary> anticipatedVisits = new HashMap<>();  // eventId: key
 
 		Date regDate = null;
-		int minEventPoint = 0;
+		int minEventPoint = 0, minEventPointInDays = 0;
+		EventPointIntervalUnit minEventPointIntervalUnit = EventPointIntervalUnit.DAYS;
 		for (Object[] row : rows) {
 			Long visitId = (Long)row[0];
 			String eventStatus = (String)row[3];
@@ -56,11 +59,12 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 			visit.setName((String)row[2]);
 			visit.setEventLabel((String)row[4]);
 			visit.setEventPoint((Integer)row[5]);
-			visit.setStatus((String)row[6]);
-			visit.setVisitDate((Date)row[7]);
-			regDate = (Date)row[8];
-			visit.setMissedReason((String)row[9]);
-			visit.setCpId((Long)row[10]);
+			visit.setIntervalUnit(EventPointIntervalUnit.valueOf((String)row[6]));
+			visit.setStatus((String)row[7]);
+			visit.setVisitDate((Date)row[8]);
+			regDate = (Date)row[9];
+			visit.setMissedReason((String)row[10]);
+			visit.setCpId((Long)row[11]);
 			visits.add(visit);
 
 			if (crit.includeStat()) {
@@ -71,8 +75,13 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 				}
 			}
 
-			if (visit.getEventPoint() != null && visit.getEventPoint() < minEventPoint) {
-				minEventPoint = visit.getEventPoint();
+			if (visit.getEventPoint() != null) {
+				Integer eventPointNoOfDays = Utility.getNoOfDays(visit.getEventPoint(), visit.getIntervalUnit());
+				if (eventPointNoOfDays < minEventPointInDays) {
+					minEventPoint = visit.getEventPoint();
+					minEventPointInDays = eventPointNoOfDays;
+					minEventPointIntervalUnit = visit.getIntervalUnit();
+				}
 			}
 		}
 
@@ -83,7 +92,10 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 			}
 
 			cal.setTime(regDate);
-			cal.add(Calendar.DAY_OF_YEAR, visit.getEventPoint() - minEventPoint);
+			setAnticipatedVisitDateInCalender(visit.getIntervalUnit(), visit.getEventPoint(), cal);
+			if (minEventPoint < 0) {
+				setAnticipatedVisitDateInCalender(minEventPointIntervalUnit, -minEventPoint, cal);
+			}
 			visit.setAnticipatedVisitDate(cal.getTime());
 		}
 
@@ -236,6 +248,23 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 			VisitSummary visit = visitsMap.get(eventId);
 			visit.setTotalPendingSpmns((Integer) row[idx++]);
 			visit.setPendingPrimarySpmns((Integer) row[idx++]);
+		}
+	}
+
+	private void setAnticipatedVisitDateInCalender(EventPointIntervalUnit intervalUnit, Integer eventPoint, Calendar cal) {
+		switch (intervalUnit) {
+			case DAYS:
+				cal.add(Calendar.DAY_OF_YEAR, eventPoint);
+				break;
+			case WEEKS:
+				cal.add(Calendar.WEEK_OF_YEAR, eventPoint);
+				break;
+			case MONTHS:
+				cal.add(Calendar.MONTH, eventPoint);
+				break;
+			case YEARS:
+				cal.add(Calendar.YEAR, eventPoint);
+				break;
 		}
 	}
 

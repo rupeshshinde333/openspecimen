@@ -15,6 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration;
 import com.krishagni.catissueplus.core.biospecimen.domain.Visit;
 import com.krishagni.catissueplus.core.common.AttributeModifiedSupport;
@@ -32,7 +33,9 @@ public class VisitDetail extends AttributeModifiedSupport {
 	
 	private String eventLabel;
 
-	private Double eventPoint;
+	private Integer eventPoint;
+
+	private String intervalUnit;
 
 	private Long cpId;
 
@@ -114,12 +117,20 @@ public class VisitDetail extends AttributeModifiedSupport {
 		this.eventLabel = eventLabel;
 	}
 
-	public Double getEventPoint() {
+	public Integer getEventPoint() {
 		return eventPoint;
 	}
 
-	public void setEventPoint(Double eventPoint) {
+	public void setEventPoint(Integer eventPoint) {
 		this.eventPoint = eventPoint;
+	}
+
+	public String getIntervalUnit() {
+		return intervalUnit;
+	}
+
+	public void setIntervalUnit(String intervalUnit) {
+		this.intervalUnit = intervalUnit;
 	}
 
 	public Long getCpId() {
@@ -342,6 +353,7 @@ public class VisitDetail extends AttributeModifiedSupport {
 			detail.setEventId(visit.getCpEvent().getId());
 			detail.setEventLabel(visit.getCpEvent().getEventLabel());
 			detail.setEventPoint(visit.getCpEvent().getEventPoint());
+			detail.setIntervalUnit(visit.getCpEvent().getIntervalUnit().name());
 		}
 		
 		if (!partial) {

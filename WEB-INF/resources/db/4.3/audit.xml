@@ -66,4 +66,11 @@
       <column name="shipmentContainer_MOD" type="${bit.type}"/>
     </addColumn>
   </changeSet>
+
+  <changeSet author="vgaikwad" id="Audit and track changes of study calender event point interval unit">
+    <addColumn tableName="CATISSUE_COLL_PROT_EVENT_AUD">
+      <column name="INTERVAL_UNIT" type="${text.type}(16)"/>
+      <column name="intervalUnit_MOD" type="${bit.type}"/>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

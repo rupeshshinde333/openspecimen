@@ -20,6 +20,14 @@
 
     <property name="eventPoint" column="STUDY_CALENDAR_EVENT_POINT"/>
 
+    <property name="intervalUnit" column="INTERVAL_UNIT">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">
+          com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent$EventPointIntervalUnit
+        </param>
+      </type>
+    </property>
+
     <many-to-one
       name="collectionProtocol"
       class="com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol"

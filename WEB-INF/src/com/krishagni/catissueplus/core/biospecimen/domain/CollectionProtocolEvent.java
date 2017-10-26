@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.DoubleAccumulator;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
@@ -22,13 +23,22 @@ import com.krishagni.catissueplus.core.common.util.Utility;
 
 @Audited
 public class CollectionProtocolEvent implements Comparable<CollectionProtocolEvent> {
+	public enum EventPointIntervalUnit {
+		DAYS,
+		WEEKS,
+		MONTHS,
+		YEARS
+	}
+
 	private static final String ENTITY_NAME = "collection_protocol_event";
 	
 	private Long id;
 
 	private String eventLabel;
 
-	private Double eventPoint;
+	private Integer eventPoint;
+
+	private EventPointIntervalUnit intervalUnit;
 
 	private CollectionProtocol collectionProtocol;
 	
@@ -72,12 +82,20 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 		this.eventLabel = eventLabel;
 	}
 
-	public Double getEventPoint() {
+	public Integer getEventPoint() {
 		return eventPoint;
 	}
 
-	public void setEventPoint(Double eventPoint) {
+	public void setEventPoint(Integer eventPoint) {
 		this.eventPoint = eventPoint;
+	}
+
+	public EventPointIntervalUnit getIntervalUnit() {
+		return intervalUnit;
+	}
+
+	public void setIntervalUnit(EventPointIntervalUnit intervalUnit) {
+		this.intervalUnit = intervalUnit;
 	}
 
 	@NotAudited
@@ -197,6 +215,7 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 	// updates all but specimen requirements
 	public void update(CollectionProtocolEvent other) { 
 		setEventPoint(other.getEventPoint());
+		setIntervalUnit(other.getIntervalUnit());
 		setEventLabel(other.getEventLabel());
 		setCollectionProtocol(other.getCollectionProtocol());
 		setCode(other.getCode());
@@ -287,8 +306,8 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 
 	@Override
 	public int compareTo(CollectionProtocolEvent other) {
-		Double thisEventPoint = getEventPoint() == null ? 0d : getEventPoint();
-		Double otherEventPoint = other.getEventPoint() == null ? 0d : other.getEventPoint();
+		Integer thisEventPoint = Utility.getNoOfDays(getEventPoint(), getIntervalUnit());
+		Integer otherEventPoint = Utility.getNoOfDays(other.getEventPoint(), other.getIntervalUnit());
 
 		if (thisEventPoint.equals(otherEventPoint)) {
 			return getId().compareTo(other.getId());
@@ -296,7 +315,7 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 			return thisEventPoint.compareTo(otherEventPoint);
 		}
 	}
-	
+
 	private static final String[] EXCLUDE_COPY_PROPS = {
 			"id",
 			"code",

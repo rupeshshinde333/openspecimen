@@ -21,7 +21,9 @@ public class CollectionProtocolEventDetail {
 	
 	private String eventLabel;
 	
-	private Double eventPoint;
+	private Integer eventPoint;
+
+	private String intervalUnit;
 
 	private Long cpId;
 	
@@ -74,12 +76,20 @@ public class CollectionProtocolEventDetail {
 		this.eventLabel = eventLabel;
 	}
 
-	public Double getEventPoint() {
+	public Integer getEventPoint() {
 		return eventPoint;
 	}
 
-	public void setEventPoint(Double eventPoint) {
+	public void setEventPoint(Integer eventPoint) {
 		this.eventPoint = eventPoint;
+	}
+
+	public String getIntervalUnit() {
+		return intervalUnit;
+	}
+
+	public void setIntervalUnit(String intervalUnit) {
+		this.intervalUnit = intervalUnit;
 	}
 
 	public Long getCpId() {
@@ -181,6 +191,7 @@ public class CollectionProtocolEventDetail {
 		detail.setCode(event.getCode());
 		detail.setEventLabel(event.getEventLabel());
 		detail.setEventPoint(event.getEventPoint());
+		detail.setIntervalUnit(event.getIntervalUnit().name());
 		detail.setClinicalDiagnosis(event.getClinicalDiagnosis());
 		detail.setClinicalStatus(event.getClinicalStatus());
 		detail.setCpId(event.getCollectionProtocol().getId());
