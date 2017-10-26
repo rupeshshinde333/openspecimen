@@ -595,7 +595,7 @@ public class Utility {
 
 	public static Integer getNoOfDays(Integer eventPoint, EventPointIntervalUnit intervalUnit) {
 		if (eventPoint == null) {
-			eventPoint = 0;
+			return null;
 		}
 
 		Integer noOfDays = null;

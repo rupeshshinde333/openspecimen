@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.DoubleAccumulator;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.beans.BeanUtils;
@@ -308,12 +309,12 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 	public int compareTo(CollectionProtocolEvent other) {
 		Integer thisEventPoint = Utility.getNoOfDays(getEventPoint(), getIntervalUnit());
 		Integer otherEventPoint = Utility.getNoOfDays(other.getEventPoint(), other.getIntervalUnit());
-
-		if (thisEventPoint.equals(otherEventPoint)) {
-			return getId().compareTo(other.getId());
-		} else {
-			return thisEventPoint.compareTo(otherEventPoint);
+		int result = ObjectUtils.compare(thisEventPoint, otherEventPoint, true);
+		if (result != 0) {
+			return result;
 		}
+
+		return getId().compareTo(other.getId());
 	}
 
 	private static final String[] EXCLUDE_COPY_PROPS = {
