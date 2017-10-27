@@ -59,7 +59,8 @@ public class VisitsDaoImpl extends AbstractDao<Visit> implements VisitsDao {
 			visit.setName((String)row[2]);
 			visit.setEventLabel((String)row[4]);
 			visit.setEventPoint((Integer)row[5]);
-			visit.setIntervalUnit(EventPointIntervalUnit.valueOf((String)row[6]));
+			visit.setIntervalUnit(StringUtils.isNotBlank((String) row[6]) ?
+				EventPointIntervalUnit.valueOf((String) row[6]) : null);
 			visit.setStatus((String)row[7]);
 			visit.setVisitDate((Date)row[8]);
 			regDate = (Date)row[9];

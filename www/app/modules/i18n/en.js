@@ -235,7 +235,8 @@
     "add_cpe": "Add Event...",
     "cpe_list": "Events",
     "cpe_code": "Event Code",
-    "cpe_point": "Event Point (in Days)",
+    "cpe_point": "Event Point",
+    "cpe_point_interval_unit": "Interval Unit",
     "cpe_point_label": "Event Point Label",
     "deleting_event": "Deleting Event...",
     "confirm_delete_event": "Collection Protocol Event and its specimen requirements will be deleted. Are you sure you want to proceed?",
@@ -314,6 +315,20 @@
       "ON_REGISTRATION": "On Registration",
       "ON_VISIT": "On Visit",
       "NONE": "None"
+    },
+
+    "cpe_interval_units": {
+      "DAYS": "Days",
+      "WEEKS": "Weeks",
+      "MONTHS": "Months",
+      "YEARS": "Years"
+    },
+
+    "cpe_interval_units_abbr": {
+      "DAYS": "D",
+      "WEEKS": "W",
+      "MONTHS": "M",
+      "YEARS": "Y"
     },
 
     "spmn_lineages": {

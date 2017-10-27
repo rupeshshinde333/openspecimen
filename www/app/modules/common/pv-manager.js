@@ -89,6 +89,13 @@ angular.module('openspecimen')
       {name: 'NONE', displayKey:'srs.spmn_label_auto_print_modes.NONE'}
     ];
 
+    var eventPointIntervalUnits = [
+      {name: 'DAYS', displayKey: 'cp.cpe_interval_units.DAYS'},
+      {name: 'WEEKS', displayKey: 'cp.cpe_interval_units.WEEKS'},
+      {name: 'MONTHS', displayKey: 'cp.cpe_interval_units.MONTHS'},
+      {name: 'YEARS', displayKey: 'cp.cpe_interval_units.YEARS'}
+    ]
+
     var pvMap = {
       anatomicSite: anatomicSites,
       'storage-type': storageTypes,
@@ -99,7 +106,8 @@ angular.module('openspecimen')
       'quality-status': qualityStatuses,
       'visit-name-print-modes': visitNamePrintModes,
       'specimen-label-pre-print-modes': spmnLabelPrePrintModes,
-      'specimen-label-auto-print-modes': spmnLabelAutoPrintModes
+      'specimen-label-auto-print-modes': spmnLabelAutoPrintModes,
+      'event-point-interval-units': eventPointIntervalUnits
     };
 
     var pvIdMap = {

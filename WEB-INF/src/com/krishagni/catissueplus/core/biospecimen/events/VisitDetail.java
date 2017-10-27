@@ -353,7 +353,8 @@ public class VisitDetail extends AttributeModifiedSupport {
 			detail.setEventId(visit.getCpEvent().getId());
 			detail.setEventLabel(visit.getCpEvent().getEventLabel());
 			detail.setEventPoint(visit.getCpEvent().getEventPoint());
-			detail.setIntervalUnit(visit.getCpEvent().getIntervalUnit().name());
+			detail.setIntervalUnit(visit.getCpEvent().getIntervalUnit() != null ?
+				visit.getCpEvent().getIntervalUnit().name() : null);
 		}
 		
 		if (!partial) {

@@ -191,7 +191,7 @@ public class CollectionProtocolEventDetail {
 		detail.setCode(event.getCode());
 		detail.setEventLabel(event.getEventLabel());
 		detail.setEventPoint(event.getEventPoint());
-		detail.setIntervalUnit(event.getIntervalUnit().name());
+		detail.setIntervalUnit(event.getIntervalUnit() != null ? event.getIntervalUnit().name(): null);
 		detail.setClinicalDiagnosis(event.getClinicalDiagnosis());
 		detail.setClinicalStatus(event.getClinicalStatus());
 		detail.setCpId(event.getCollectionProtocol().getId());

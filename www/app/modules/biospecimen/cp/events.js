@@ -23,6 +23,7 @@ angular.module('os.biospecimen.cp.events', ['os.biospecimen.models'])
         return;
       }
 
+      $scope.intervalUnits = PvManager.getPvs('event-point-interval-units');
       $scope.visitNamePrintModes = PvManager.getPvs('visit-name-print-modes');
       pvsLoaded = true;
     };
@@ -41,7 +42,7 @@ angular.module('os.biospecimen.cp.events', ['os.biospecimen.models'])
     };
 
     $scope.showAddEvent = function() {
-      $scope.event = new CollectionProtocolEvent({collectionProtocol: cp.title});
+      $scope.event = new CollectionProtocolEvent({collectionProtocol: cp.title, intervalUnit: "DAYS"});
       $scope.mode = 'add';
       loadPvs();
     };

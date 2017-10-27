@@ -133,6 +133,10 @@ public class CpeFactoryImpl implements CpeFactory {
 	}
 
 	private void setIntervalUnit(CollectionProtocolEventDetail detail, CollectionProtocolEvent cpe, OpenSpecimenException ose) {
+		if (cpe.getEventPoint() == null) {
+			return;
+		}
+
 		if (StringUtils.isBlank(detail.getIntervalUnit())) {
 			ose.addError(CpeErrorCode.INTERVAL_UNIT_REQUIRED);
 			return;
