@@ -11,7 +11,7 @@ import com.krishagni.catissueplus.core.administrative.domain.factory.SiteErrorCo
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol.VisitNamePrintMode;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent;
-import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent.EventPointIntervalUnit;
+import com.krishagni.catissueplus.core.common.domain.IntervalUnit;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpeErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpeFactory;
@@ -42,7 +42,7 @@ public class CpeFactoryImpl implements CpeFactory {
 		cpe.setId(detail.getId());
 		setEventLabel(detail, cpe, ose);
 		setEventPoint(detail, cpe, ose);
-		setIntervalUnit(detail, cpe, ose);
+		setEventPointUnit(detail, cpe, ose);
 		setCode(detail, cpe, ose);
 		setCp(detail, cpe, ose);
 		setDefaultSite(detail, cpe, ose);
@@ -71,10 +71,10 @@ public class CpeFactoryImpl implements CpeFactory {
 			cpe.setEventPoint(existing.getEventPoint());
 		}
 
-		if (StringUtils.isNotBlank(detail.getIntervalUnit())) {
-			setIntervalUnit(detail, cpe, ose);
+		if (StringUtils.isNotBlank(detail.getEventPointUnit())) {
+			setEventPointUnit(detail, cpe, ose);
 		} else {
-			cpe.setIntervalUnit(existing.getIntervalUnit());
+			cpe.setEventPointUnit(existing.getEventPointUnit());
 		}
 		
 		cpe.setCollectionProtocol(existing.getCollectionProtocol());
@@ -132,25 +132,23 @@ public class CpeFactoryImpl implements CpeFactory {
 		cpe.setEventPoint(detail.getEventPoint());
 	}
 
-	private void setIntervalUnit(CollectionProtocolEventDetail detail, CollectionProtocolEvent cpe, OpenSpecimenException ose) {
+	private void setEventPointUnit(CollectionProtocolEventDetail detail, CollectionProtocolEvent cpe, OpenSpecimenException ose) {
 		if (cpe.getEventPoint() == null) {
 			return;
 		}
 
-		if (StringUtils.isBlank(detail.getIntervalUnit())) {
-			ose.addError(CpeErrorCode.INTERVAL_UNIT_REQUIRED);
+		if (StringUtils.isBlank(detail.getEventPointUnit())) {
+			ose.addError(CpeErrorCode.POINT_UNIT_REQUIRED);
 			return;
 		}
 
-		EventPointIntervalUnit intervalUnit = null;
+		IntervalUnit eventPointUnit = null;
 		try {
-			intervalUnit = EventPointIntervalUnit.valueOf(detail.getIntervalUnit());
+			eventPointUnit = IntervalUnit.valueOf(detail.getEventPointUnit());
+			cpe.setEventPointUnit(eventPointUnit);
 		} catch (IllegalArgumentException iae) {
-			ose.addError(CpeErrorCode.INVALID_INTERVAL_UNIT, detail.getIntervalUnit());
-			return;
+			ose.addError(CpeErrorCode.INVALID_POINT_UNIT, detail.getEventPointUnit());
 		}
-
-		cpe.setIntervalUnit(intervalUnit);
 	}
 
 

@@ -2,7 +2,6 @@
 package com.krishagni.catissueplus.core.biospecimen.events;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -35,7 +34,7 @@ public class VisitDetail extends AttributeModifiedSupport {
 
 	private Integer eventPoint;
 
-	private String intervalUnit;
+	private String eventPointUnit;
 
 	private Long cpId;
 
@@ -125,12 +124,12 @@ public class VisitDetail extends AttributeModifiedSupport {
 		this.eventPoint = eventPoint;
 	}
 
-	public String getIntervalUnit() {
-		return intervalUnit;
+	public String getEventPointUnit() {
+		return eventPointUnit;
 	}
 
-	public void setIntervalUnit(String intervalUnit) {
-		this.intervalUnit = intervalUnit;
+	public void setEventPointUnit(String eventPointUnit) {
+		this.eventPointUnit = eventPointUnit;
 	}
 
 	public Long getCpId() {
@@ -350,11 +349,11 @@ public class VisitDetail extends AttributeModifiedSupport {
 		detail.setCpShortTitle(cpr.getCollectionProtocol().getShortTitle());
 		
 		if (!visit.isUnplanned()) {
-			detail.setEventId(visit.getCpEvent().getId());
-			detail.setEventLabel(visit.getCpEvent().getEventLabel());
-			detail.setEventPoint(visit.getCpEvent().getEventPoint());
-			detail.setIntervalUnit(visit.getCpEvent().getIntervalUnit() != null ?
-				visit.getCpEvent().getIntervalUnit().name() : null);
+			CollectionProtocolEvent cpe = visit.getCpEvent();
+			detail.setEventId(cpe.getId());
+			detail.setEventLabel(cpe.getEventLabel());
+			detail.setEventPoint(cpe.getEventPoint());
+			detail.setEventPointUnit(cpe.getEventPointUnit() != null ? cpe.getEventPointUnit().name() : null);
 		}
 		
 		if (!partial) {

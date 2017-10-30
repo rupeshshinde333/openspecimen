@@ -89,11 +89,11 @@ angular.module('openspecimen')
       {name: 'NONE', displayKey:'srs.spmn_label_auto_print_modes.NONE'}
     ];
 
-    var eventPointIntervalUnits = [
-      {name: 'DAYS', displayKey: 'cp.cpe_interval_units.DAYS'},
-      {name: 'WEEKS', displayKey: 'cp.cpe_interval_units.WEEKS'},
-      {name: 'MONTHS', displayKey: 'cp.cpe_interval_units.MONTHS'},
-      {name: 'YEARS', displayKey: 'cp.cpe_interval_units.YEARS'}
+    var intervalUnits = [
+      {name: 'DAYS',   displayKey: 'common.interval_units.DAYS'},
+      {name: 'WEEKS',  displayKey: 'common.interval_units.WEEKS'},
+      {name: 'MONTHS', displayKey: 'common.interval_units.MONTHS'},
+      {name: 'YEARS',  displayKey: 'common.interval_units.YEARS'}
     ]
 
     var pvMap = {
@@ -107,7 +107,7 @@ angular.module('openspecimen')
       'visit-name-print-modes': visitNamePrintModes,
       'specimen-label-pre-print-modes': spmnLabelPrePrintModes,
       'specimen-label-auto-print-modes': spmnLabelAutoPrintModes,
-      'event-point-interval-units': eventPointIntervalUnits
+      'interval-units': intervalUnits
     };
 
     var pvIdMap = {

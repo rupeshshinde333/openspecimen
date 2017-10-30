@@ -45,7 +45,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krishagni.catissueplus.core.biospecimen.domain.BaseEntity;
 import com.krishagni.catissueplus.core.biospecimen.domain.BaseExtensionEntity;
-import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolEvent.EventPointIntervalUnit;
+import com.krishagni.catissueplus.core.common.domain.IntervalUnit;
 import com.krishagni.catissueplus.core.common.PdfUtil;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -593,24 +593,27 @@ public class Utility {
 		return isValid;
 	}
 
-	public static Integer getNoOfDays(Integer eventPoint, EventPointIntervalUnit intervalUnit) {
-		if (eventPoint == null) {
+	public static Integer getNoOfDays(Integer interval, IntervalUnit intervalUnit) {
+		if (interval == null) {
 			return null;
 		}
 
 		Integer noOfDays = null;
 		switch (intervalUnit) {
 			case DAYS:
-				noOfDays = eventPoint;
+				noOfDays = interval;
 				break;
+
 			case WEEKS:
-				noOfDays = eventPoint * 7;
+				noOfDays = interval * 7;
 				break;
+
 			case MONTHS:
-				noOfDays = eventPoint * 30;
+				noOfDays = interval * 30;
 				break;
+
 			case YEARS:
-				noOfDays = eventPoint * 365;
+				noOfDays = interval * 365;
 				break;
 		}
 

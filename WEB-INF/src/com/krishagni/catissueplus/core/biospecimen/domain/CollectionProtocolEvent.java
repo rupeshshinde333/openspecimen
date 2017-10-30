@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.DoubleAccumulator;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -18,18 +17,13 @@ import org.springframework.beans.BeanUtils;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol.VisitNamePrintMode;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.SrErrorCode;
+import com.krishagni.catissueplus.core.common.domain.IntervalUnit;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.common.util.Utility;
 
 @Audited
 public class CollectionProtocolEvent implements Comparable<CollectionProtocolEvent> {
-	public enum EventPointIntervalUnit {
-		DAYS,
-		WEEKS,
-		MONTHS,
-		YEARS
-	}
 
 	private static final String ENTITY_NAME = "collection_protocol_event";
 	
@@ -39,7 +33,7 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 
 	private Integer eventPoint;
 
-	private EventPointIntervalUnit intervalUnit;
+	private IntervalUnit eventPointUnit;
 
 	private CollectionProtocol collectionProtocol;
 	
@@ -91,12 +85,12 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 		this.eventPoint = eventPoint;
 	}
 
-	public EventPointIntervalUnit getIntervalUnit() {
-		return intervalUnit;
+	public IntervalUnit getEventPointUnit() {
+		return eventPointUnit;
 	}
 
-	public void setIntervalUnit(EventPointIntervalUnit intervalUnit) {
-		this.intervalUnit = intervalUnit;
+	public void setEventPointUnit(IntervalUnit eventPointUnit) {
+		this.eventPointUnit = eventPointUnit;
 	}
 
 	@NotAudited
@@ -216,7 +210,7 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 	// updates all but specimen requirements
 	public void update(CollectionProtocolEvent other) { 
 		setEventPoint(other.getEventPoint());
-		setIntervalUnit(other.getIntervalUnit());
+		setEventPointUnit(other.getEventPointUnit());
 		setEventLabel(other.getEventLabel());
 		setCollectionProtocol(other.getCollectionProtocol());
 		setCode(other.getCode());
@@ -307,14 +301,14 @@ public class CollectionProtocolEvent implements Comparable<CollectionProtocolEve
 
 	@Override
 	public int compareTo(CollectionProtocolEvent other) {
-		Integer thisEventPoint = Utility.getNoOfDays(getEventPoint(), getIntervalUnit());
-		Integer otherEventPoint = Utility.getNoOfDays(other.getEventPoint(), other.getIntervalUnit());
+		Integer thisEventPoint  = Utility.getNoOfDays(getEventPoint(), getEventPointUnit());
+		Integer otherEventPoint = Utility.getNoOfDays(other.getEventPoint(), other.getEventPointUnit());
 		int result = ObjectUtils.compare(thisEventPoint, otherEventPoint, true);
-		if (result != 0) {
-			return result;
+		if (result == 0) {
+			result = getId().compareTo(other.getId());
 		}
 
-		return getId().compareTo(other.getId());
+		return result;
 	}
 
 	private static final String[] EXCLUDE_COPY_PROPS = {

@@ -15,7 +15,7 @@
         <div ng-if="evt.id != event.id">
           <div class="list-group-item" ng-class="{'active': selected.id == evt.id}">
             <div ng-click="selectEvent(evt)">
-              <os-event-desc event-point="evt.eventPoint" event-point-interval-unit="evt.intervalUnit"
+              <os-event-desc event-point="evt.eventPoint" event-point-unit="evt.eventPointUnit"
                 event-label="evt.eventLabel" event-code="evt.code" coding-enabled="codingEnabled">
               </os-event-desc>
             </div>
@@ -97,11 +97,11 @@
         <div os-field-error field="eventForm.eventPoint"></div>
       </div>
       <div class="col-xs-6 input os-no-right-padding">
-        <os-select os-md-input name="intervalUnit" ng-model="event.intervalUnit" list="intervalUnits"
-          display-prop="displayName" select-prop="name" placeholder="{{'cp.cpe_point_interval_unit' | translate}}"
+        <os-select os-md-input name="eventPointUnit" ng-model="event.eventPointUnit" list="eventPointUnits"
+          display-prop="displayName" select-prop="name" placeholder="{{'cp.cpe_point_unit' | translate}}"
           ng-required="!!event.eventPoint">
         </os-select>
-        <div os-field-error field="eventForm.intervalUnit"></div>
+        <div os-field-error field="eventForm.eventPointUnit"></div>
       </div>
     </div>
 

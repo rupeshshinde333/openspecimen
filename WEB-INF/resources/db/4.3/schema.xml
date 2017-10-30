@@ -135,10 +135,9 @@
       referencedTableName="OS_SHIPMENT_CONTAINERS" referencedColumnNames="IDENTIFIER"/>
   </changeSet>
 
-  <changeSet author="vgaikwad" id="Column to specify study calender event point interval unit">
+  <changeSet author="vgaikwad" id="Collection protocol event point units">
     <addColumn tableName="CATISSUE_COLL_PROT_EVENT">
-      <column name="INTERVAL_UNIT" type="${text.type}(16)" defaultValue="DAYS">
-      </column>
+      <column name="EVENT_POINT_UNIT" type="${text.type}(16)" defaultValue="DAYS"/>
     </addColumn>
   </changeSet>
 </databaseChangeLog>
